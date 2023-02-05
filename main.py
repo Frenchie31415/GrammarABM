@@ -1,11 +1,11 @@
-import networkx
+import networkx as nx
+import pylab as plt
+from networkx.drawing.nx_agraph import graphviz_layout
+import pygraphviz as pgv
 
 def main():
-    print("Hello World!")
-    gen_graph()
+    print('hello')
 
-def gen_graph():
-    print("This is a test")
 
 if __name__ == "__main__":
     main()
