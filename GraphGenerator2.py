@@ -116,5 +116,7 @@ if __name__ == "__main__":
     #min_avg_node_density = miniumum average node density (CURRENTLY COMMENTED OUT)
     #num_itr = max number of edges to be drawn (if num paths is not satisfied)
     #filename - to save dag graph
-    f = GraphGenerator(30,2,20,0.8,20000,"test2.png")
-    f.gen_graph()
+    for i in range(20):
+        filename = "test/test" + str(i) + ".png"
+        f = GraphGenerator(30,2,7,0.8,2000,filename)
+        f.gen_graph()

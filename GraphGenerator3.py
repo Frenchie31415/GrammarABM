@@ -1,11 +1,13 @@
 import networkx as nx
 import random
+import numpy as np
 from random import randrange
 import pylab as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 import pygraphviz as pgv
 
-#Completely random selection of edges
+#Encourages graph to choose deeper routes
+#Encourages graph to join with end node once min path length reached
 #Constraints ensure graph is Directed and acyclic
 
 class GraphGenerator:
@@ -28,6 +30,7 @@ class GraphGenerator:
         g = nx.DiGraph()
         g = self.init_graph(g)
         i = 0
+        #k=node v=distance from 0
         pointing = [0]
         while((self.total_paths(g) < self.num_paths) and (i < self.max_itr)):
 
@@ -35,16 +38,26 @@ class GraphGenerator:
                 break
 
             i = i + 1
-            fr_index = randrange(len(pointing))
-            fr = pointing[fr_index]
-            to = random.randint(1,self.num_nodes)
+            #Calculate fr by using distribution
+            pointing_distances = list(map(lambda x: self.dist(g,x),pointing))
+            pointing_probs = self.prob_dist(pointing_distances)
+
+            #If min_path can be created, do it, else rand dist
+            if(max(pointing_distances) == self.min_path_length-1):
+                fr = pointing[pointing_distances.index(max(pointing_distances))]
+                to = self.num_nodes
+                print('path created')
+            else:
+                fr = np.random.choice(pointing,1,True,pointing_probs)[0]
+                to = random.randint(1,self.num_nodes) #Could be improved
+
             if(nx.is_path(g,[fr,to]) == True): #Ensure edge does not exist
                 continue
             if(fr == 0 and to == self.num_nodes): #Ensures start node does not point to end
                 continue
             if(fr == self.num_nodes): #Ensures final node is not pointing
                 continue
-            if((to == self.num_nodes) & (nx.shortest_path_length(g,0,fr) < self.min_path_length - 1)): #Ensure min path length holds
+            if((to == self.num_nodes) & (nx.shortest_path_length(g,0,fr) < self.min_path_length-1)): #Ensure min path length holds
                 continue
             #if((to == self.num_nodes) & (self.min_avg_node_deg >= self.graph_avg_node_density(pointing,g))): #Ensure graph has minium average density
             #    continue
@@ -52,9 +65,10 @@ class GraphGenerator:
 
             new_g = g.copy()
             new_g.add_edge(fr,to)
-            if (self.is_cycle(new_g) == False) and (self.min_path_length <= self.current_min_path_length(new_g)):
+            if (self.is_cycle(new_g) == False):
                 g = new_g
-                pointing = pointing + [to]
+                if to not in pointing:
+                    pointing = pointing + [to]
             else:
                 continue
 
@@ -72,10 +86,10 @@ class GraphGenerator:
             
             print(path)
             g = nx.relabel_nodes(g,mapping)
-            nx.write_edgelist(g, "test.txt")
+            nx.write_edgelist(g, "12/adj/" + self.file_name + ".txt")
             A = nx.nx_agraph.to_agraph(g)
             A.layout(prog='dot')
-            A.draw(self.file_name)
+            A.draw("12/img/" + self.file_name + ".png")
         except:
             print('Generation failed. Trying again...')
             self.gen_graph()
@@ -107,7 +121,33 @@ class GraphGenerator:
         except:
             return 0
 
+    def dist(self,g,node):
+        try:
+            path_length = len(nx.shortest_path(g,source=0,target=node))
+            return path_length
+        except Exception as e:
+            #print(e)
+            return 1 #If no path
 
+    def prob_dist(self,list):
+        return self.prob_dist_quad(list)
+
+
+    def prob_dist_linear(self,list):
+        cum = 0
+        for i in range(0,len(list)):
+            cum = cum + list[i]
+        for i in range(0,len(list)):
+            list[i] = list[i] / cum
+        return list
+    
+    def prob_dist_quad(self,list):
+        cum = 0
+        for i in range(0,len(list)):
+            cum = cum + (list[i] * list[i] * (list[i]))
+        for i in range(0,len(list)):
+            list[i] = (list[i] * list[i] * (list[i])) / cum
+        return list
 
 if __name__ == "__main__":
     #num_nodes generated (not used)
@@ -116,5 +156,7 @@ if __name__ == "__main__":
     #min_avg_node_density = miniumum average node density (CURRENTLY COMMENTED OUT)
     #num_itr = max number of edges to be drawn (if num paths is not satisfied)
     #filename - to save dag graph
-    f = GraphGenerator(30,2,20,0.8,20000,"test2.png")
-    f.gen_graph()
+    for i in range(100):
+        filename = str(i)
+        f = GraphGenerator(30,2,10,0.8,2000,filename)
+        f.gen_graph()

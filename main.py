@@ -1,11 +1,4 @@
-import networkx as nx
-import pylab as plt
-from networkx.drawing.nx_agraph import graphviz_layout
-import pygraphviz as pgv
+import numpy as np
 
-def main():
-    print('hello')
-
-
-if __name__ == "__main__":
-    main()
+x = np.random.choice([1,2],1,True,[0.5,0.5])
+print(x)
