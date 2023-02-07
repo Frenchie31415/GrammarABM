@@ -27,23 +27,21 @@ class GraphEdgeGenerator:
             fr = int(nodes[0])
             to = int(nodes[1])
 
+            #Ensure nodes does not have 2 edges using the same production rule
             if fr != prev_node:
                 current_lang = self.language.copy()
             
+            #Randomly selects transition
             trans = np.random.choice(current_lang,replace=True)
+            #Removes transition from choices in the case where next edge goes from same node
             current_lang.remove(trans)
-
-            if(g.has_node(fr) == False):
-                g.add_node(fr)
-            if(g.has_node(to) == False):
-                g.add_node(to)
 
             g.add_edge(fr,to,label=str(trans))
             prev_node = fr
 
         A = nx.nx_agraph.to_agraph(g)
         A.layout(prog='dot')
-        A.draw("test/" + "0.png")
+        A.draw("test2/" + "0.png")
         end_node = g.number_of_nodes() - 1
         paths = list(nx.all_simple_paths(g,0,end_node))
         trans_paths = []
@@ -59,6 +57,7 @@ class GraphEdgeGenerator:
     
     
 if __name__ == "__main__":
+    #Maybe replace language with langugae size where it auto generates language upon class init
     g = GraphEdgeGenerator("12/adj/","6",["a","b","c","d","e","f"])
     g.calc_trans_paths()
     
