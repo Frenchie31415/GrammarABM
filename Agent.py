@@ -63,7 +63,8 @@ class Agent:
         
         return paths[0]
      
-            
+    def get_possible_prov_paths(self):
+        return self.trans_paths        
     
     #Determines agents most likely transition out of multiple options in list
     def get_prec(self,list):
