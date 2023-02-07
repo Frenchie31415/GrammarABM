@@ -39,25 +39,21 @@ class GraphEdgeGenerator:
             g.add_edge(fr,to,label=str(trans))
             prev_node = fr
 
-        A = nx.nx_agraph.to_agraph(g)
-        A.layout(prog='dot')
-        A.draw("test2/" + "0.png")
-        end_node = g.number_of_nodes() - 1
-        paths = list(nx.all_simple_paths(g,0,end_node))
-        trans_paths = []
-        for path in paths:
-            trans_path = ""
-            for i in range(0,len(path)-1):
-                fr = path[i]
-                to = path[i+1]
-                dict = g.get_edge_data(fr,to)
-                trans_path = trans_path + dict['label']
-            trans_paths.append(trans_path)
+        #Uncomment to save image of graph
+        #save_dir_png = "test2/" + self.file_name + ".png"
+        #A = nx.nx_agraph.to_agraph(g)
+        #A.layout(prog='dot')
+        #A.draw(save_dir)
+
+        save_dir_txt = "test2/" + self.file_name + ".txt"
+        nx.write_edgelist(g,save_dir_txt) 
 
     
     
 if __name__ == "__main__":
     #Maybe replace language with langugae size where it auto generates language upon class init
-    g = GraphEdgeGenerator("12/adj/","6",["a","b","c","d","e","f"])
-    g.calc_trans_paths()
+    for i in range(0,100):    
+        g = GraphEdgeGenerator("12/adj/",str(i),["a","b","c","d","e","f"])
+        g.calc_trans_paths()
+        print(i)
     
