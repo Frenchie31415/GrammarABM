@@ -27,7 +27,6 @@ class Agent:
         self.trans_paths = trans_paths
 
     def calc_prov_path(self):
-        print(self.trans_paths)
         paths = self.trans_paths.copy()
         num_paths = len(self.trans_paths)
         longest_list = min([len(x) for x in self.trans_paths])
@@ -54,8 +53,6 @@ class Agent:
             for k in range(0,len(poss_trans)):
                 if poss_trans[k] != prec:
                     to_remove.append(k)
-            
-            print(to_remove)
 
             #Remove paths that don't have highest precedence transformation
             for l in sorted(to_remove,reverse=True):
@@ -63,6 +60,8 @@ class Agent:
 
             #Update number of paths
             num_paths = num_paths - len(to_remove)
+        
+        return paths[0]
      
             
     
