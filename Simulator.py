@@ -1,20 +1,36 @@
 import random
 from Agent import Agent
 from Model import Model
+import itertools
 
 class Simulator:
     def __init__(self,dir):
         self.dir = dir
-        all_graphs = list(range(0,100))
-
-        #Train test split for graphs
-        random.shuffle(all_graphs)
-        self.train = all_graphs[20:]
-        self.test = all_graphs[:80]
 
         #Initialise agent
         self.agent = Agent(["a","b","c","d","e","f"])
         self.agent.gen_precedence()
+        self.init_data()
+
+    #Create 5 folds for cross validation
+    def init_data(self):
+        all_graphs = list(range(0,100))
+        #Train test split for graphs
+        random.shuffle(all_graphs)
+        self.splits = [all_graphs[0:19],all_graphs[20:39],all_graphs[40:59],all_graphs[60:79],all_graphs[80:99]]
+        self.test_split = 0
+        self.train = all_graphs[20:]
+        self.test = all_graphs[:80]
+
+    #Rotates testing fold for cross validation
+    def next_fold(self):
+        splits = self.splits.copy()
+        #Needs to be mod
+        self.test_split = self.test_split + 1
+        
+        self.test = splits[self.test_split % 5]
+        del splits[(self.test_split % 5)]
+        self.train = list(itertools.chain.from_iterable(splits))
 
     def gen_agent_prov_history(self):
         history = ""
@@ -54,6 +70,9 @@ class Simulator:
         print("f",self.history.count("f"))
 
     def eval(self):
+        return self.eval_case_by_case()
+    
+    def eval_case_by_case(self):
         correct = 0
         incorrect = 0
         for i in range(0,len(self.future)):
@@ -69,13 +88,14 @@ class Simulator:
 
 if __name__ == "__main__":
     results = []
+    sim = Simulator("test2/")
 
     for i in range(0,5):
-        sim = Simulator("test2/")
         sim.gen_agent_prov_history()
         sim.gen_agent_prov_future()
         sim.predict_prov_future()
         results.append(sim.eval())
+        sim.next_fold()
     
     print('ACCURACY RESULT')
     print(sum(results) / 5)
