@@ -97,14 +97,35 @@ class Simulator:
         edit_distance = enchant.utils.levenshtein(predicted_future_concat, future_concat)
         return (longest - edit_distance) / longest
         #use nltk leve function
+
+    def get_dist_func(self,path):
+        dist = []
+        dist.append(path.count("a"))
+        dist.append(path.count("b"))
+        dist.append(path.count("c"))
+        dist.append(path.count("d"))
+        dist.append(path.count("e"))
+        dist.append(path.count("f"))
+        return dist
     
-    def eval_hamming(self):
-        print('h')
+    def eval_dist_diff_distance(self):
+        future_concat = str(list(itertools.chain.from_iterable(self.future)))
+        predicted_future_concat = str(list(itertools.chain.from_iterable(self.predicted_future)))
+        future_dist = self.get_dist_func(future_concat)
+        predicted_dist = self.get_dist_func(predicted_future_concat)
+
+        cum = 0
+        for i in range(0,len(future_dist)):
+            cum = cum + (future_dist[i] - predicted_dist[i]) ** 2
+        
+        return cum ** 0.5
+
 
 
 if __name__ == "__main__":
     results = []
     results_lev = []
+    results_dist_diff = []
     sim = Simulator("test2/")
 
     for i in range(0,5):
@@ -113,10 +134,13 @@ if __name__ == "__main__":
         sim.predict_prov_future()
         results.append(sim.eval_case_by_case())
         results_lev.append(sim.eval_levenshtein())
+        results_dist_diff.append(sim.eval_dist_diff_distance())
         sim.next_fold()
     
     print('ACCURACY RESULT')
     print(sum(results) / 5)
     print('LEV RESULTS')
     print(sum(results_lev) / 5)
+    print('DIST DIFF RESULTS')
+    print(sum(results_dist_diff) / 5)
 
