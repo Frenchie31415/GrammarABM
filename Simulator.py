@@ -2,6 +2,7 @@ import random
 from Agent import Agent
 from Model import Model
 import itertools
+import enchant
 
 class Simulator:
     def __init__(self,dir):
@@ -70,7 +71,8 @@ class Simulator:
         print("f",self.history.count("f"))
 
     def eval(self):
-        return self.eval_case_by_case()
+        if len(self.predicted_future) != len(self.future): raise Exception("Different number of paths being compared")
+        return self.eval_levenshtein()
     
     def eval_case_by_case(self):
         correct = 0
@@ -86,17 +88,35 @@ class Simulator:
         
         return(correct / (correct + incorrect))
 
+    def eval_levenshtein(self):
+        #concat history and future
+        print("Evaluating")
+        future_concat = str(list(itertools.chain.from_iterable(self.future)))
+        predicted_future_concat = str(list(itertools.chain.from_iterable(self.predicted_future)))
+        longest = max(len(future_concat),len(predicted_future_concat))
+        edit_distance = enchant.utils.levenshtein(predicted_future_concat, future_concat)
+        return (longest - edit_distance) / longest
+        #use nltk leve function
+    
+    def eval_hamming(self):
+        print('h')
+
+
 if __name__ == "__main__":
     results = []
+    results_lev = []
     sim = Simulator("test2/")
 
     for i in range(0,5):
         sim.gen_agent_prov_history()
         sim.gen_agent_prov_future()
         sim.predict_prov_future()
-        results.append(sim.eval())
+        results.append(sim.eval_case_by_case())
+        results_lev.append(sim.eval_levenshtein())
         sim.next_fold()
     
     print('ACCURACY RESULT')
     print(sum(results) / 5)
+    print('LEV RESULTS')
+    print(sum(results_lev) / 5)
 
