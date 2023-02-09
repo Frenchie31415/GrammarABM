@@ -1,5 +1,7 @@
 import random
 from Agent import Agent
+from StocasticAgent import StocasticAgent
+from UnaryProbAgent import UnaryProbAgent
 from Model import Model
 import itertools
 import enchant
@@ -9,8 +11,8 @@ class Simulator:
         self.dir = dir
 
         #Initialise agent
-        self.agent = Agent(["a","b","c","d","e","f"])
-        self.agent.gen_precedence()
+        self.agent = UnaryProbAgent(["a","b","c","d","e","f"])
+        self.agent.gen_dist()
         self.init_data()
 
     #Create 5 folds for cross validation
@@ -96,7 +98,6 @@ class Simulator:
         longest = max(len(future_concat),len(predicted_future_concat))
         edit_distance = enchant.utils.levenshtein(predicted_future_concat, future_concat)
         return (longest - edit_distance) / longest
-        #use nltk leve function
 
     def get_dist_func(self,path):
         dist = []
@@ -120,8 +121,6 @@ class Simulator:
         
         return cum ** 0.5
 
-
-
 if __name__ == "__main__":
     results = []
     results_lev = []
@@ -143,4 +142,3 @@ if __name__ == "__main__":
     print(sum(results_lev) / 5)
     print('DIST DIFF RESULTS')
     print(sum(results_dist_diff) / 5)
-

@@ -1,17 +1,22 @@
 import networkx as nx
 import random
+import numpy as np
 
 #Equation used to calc P('user selects action' | 'possible actions')
-#P(X=x|Y) = max(P(X=y|Y)) for all y in Y where Y is a subset of L (language)
+#P(X=x|Y) = dist[x] / sum(Y) where Y is a subset of L (language)
 
-class Agent:
+class UnaryProbAgent:
     def __init__(self,language):
         self.language = language
     
-    def gen_precedence(self):
-        self.prec = self.language.copy()
-        random.shuffle(self.prec)
-    
+    def gen_dist(self):
+        num_trans = len(self.language)
+        dist = []
+        for i in range(0,num_trans):
+            dist.append(random.randint(0,100)) #If =0 then agent is unaware of transformation
+
+        self.dist = dist
+
     def load_graph(self,dir):
         self.g = nx.read_edgelist(dir,create_using=nx.DiGraph)
 
@@ -71,15 +76,19 @@ class Agent:
     
     #Determines agents most likely transition out of multiple options in list
     def get_prec(self,list):
-        prec_trans = list[0]
-        prec_index = self.prec.index(prec_trans)
-        for i in range(1,len(list)):
-            trans = list[i]
-            i_index = self.prec.index(trans)
-            if i_index < prec_index:
-                prec_trans = trans
-                prec_index = i_index
-        return prec_trans
+        indexes = []
+        dist = []
+        for i in list:
+            index = self.language.index(i)
+            indexes.append(index)
+            dist.append(index)
+        
+        total = sum(dist)
+        #Creates prob dist for list
+        for i in range(0,len(dist)):
+            dist[i] = dist[i] / total
+        
+        return np.random.choice(list,p=dist)
 
         
     #Saves graph as image for testing
@@ -89,10 +98,13 @@ class Agent:
         A.draw("test/test.png")
 
 if __name__ == "__main__":
-    agent = Agent(["a","b","c","d","e","f"])
-    agent.gen_precedence()
+    agent = UnaryProbAgent(["a","b","c","d","e","f"])
+    agent.gen_dist()
     agent.load_graph("test2/0.txt")
     #agent.save_graph_pic()
+    print(agent.language)
+    print(agent.dist)
     agent.calc_pp_paths()
-    agent.calc_prov_path()
+    print(agent.trans_paths)
+    print(agent.calc_prov_path())
 

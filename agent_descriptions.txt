@@ -1,0 +1,8 @@
+Single transformation agents (Only consider actions that are different between the paths in order they occur)
+Agent, P(X=x|Y) = max(P(X=y|Y)) for all y in Y where Y is a subset of L (language)
+UnaryProbAgent, P(X=x|Y) = dist[x] / sum(dist[Y]) where Y is a subset of L (language), dist[y] = randint(0,100)
+StocasticAgent, P(X=x|Y) = 1 / |Y| where Y is a subset of L (language)
+
+Multi-transformation agent (Consider whole path) n.b E = actual provenance path,P = possible prov paths
+IndependentActionsAgent, P(E=e|P) = product(P(X=x)) for x in E (Assumes transformations are independent of each other)
+CovarianceRelationAgent (TODO)
