@@ -1,0 +1,7 @@
+0 1 {'label': 'd'}
+1 4 {'label': 'c'}
+1 2 {'label': 'e'}
+4 3 {'label': 'b'}
+2 4 {'label': 'c'}
+2 3 {'label': 'd'}
+3 5 {'label': 'a'}

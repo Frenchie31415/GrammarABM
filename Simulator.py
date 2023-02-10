@@ -16,9 +16,9 @@ class Simulator:
         self.dir = dir
 
         #Initialise agent
-        self.agent = UnaryProbAgent(["a","b","c","d","e","f"])
-        #self.agent.gen_precedence()
-        self.agent.gen_dist()
+        self.agent = Agent(["a","b","c","d","e","f"])
+        self.agent.gen_precedence()
+        #self.agent.gen_dist()
         self.init_data()
 
     #Create 5 folds for cross validation
@@ -62,10 +62,10 @@ class Simulator:
         self.future = future
     
     def predict_prov_future(self):
-        model = Model3(["a","b","c","d","e","f"],self.history)
-        model.calc_freq_dist_history() #Used for Model2/3
-        model.calc_bin_freq_dist_history() #Used for Model2
-        #model.calc_freq_dist() #Used for Model
+        model = Model(["a","b","c","d","e","f"],self.history)
+        #model.calc_freq_dist_history() #Used for Model2/3
+        #model.calc_bin_freq_dist_history() #Used for Model2
+        model.calc_freq_dist() #Used for Model 1
         predicted_future = []
         for i in self.possible_provenance:
             predicted_future.append(model.predict_prov_path(i))
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     results = []
     results_lev = []
     results_dist_diff = []
-    sim = Simulator("test2/")
+    sim = Simulator("test3/")
 
     for i in range(0,5):
         sim.gen_agent_prov_history()
