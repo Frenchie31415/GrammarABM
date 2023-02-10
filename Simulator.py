@@ -2,6 +2,7 @@ import random
 from Agent import Agent
 from StocasticAgent import StocasticAgent
 from UnaryProbAgent import UnaryProbAgent
+from IndActAgent import IndActAgent
 from Model import Model
 import itertools
 import enchant
@@ -11,7 +12,7 @@ class Simulator:
         self.dir = dir
 
         #Initialise agent
-        self.agent = UnaryProbAgent(["a","b","c","d","e","f"])
+        self.agent = IndActAgent(["a","b","c","d","e","f"])
         self.agent.gen_dist()
         self.init_data()
 

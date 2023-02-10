@@ -2,7 +2,7 @@ import networkx as nx
 import random
 
 #Equation used to calc P('user selects action' | 'possible actions')
-#P(X=x|Y) = max(P(X=y|Y)) for all y in Y where Y is a subset of L (language)
+#P(E=e|P) = product(P(X=x)) for x in E (Assumes transformations are independent of each other)
 
 class Agent:
     def __init__(self,language):
