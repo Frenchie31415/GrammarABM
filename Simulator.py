@@ -6,6 +6,8 @@ from IndActAgent import IndActAgent
 from LinearActAgent import LinearActAgent
 from PowerActAgent import PowerActAgent
 from Model import Model
+from Model2 import Model2
+from Model3 import Model3
 import itertools
 import enchant
 
@@ -14,7 +16,8 @@ class Simulator:
         self.dir = dir
 
         #Initialise agent
-        self.agent = PowerActAgent(["a","b","c","d","e","f"])
+        self.agent = UnaryProbAgent(["a","b","c","d","e","f"])
+        #self.agent.gen_precedence()
         self.agent.gen_dist()
         self.init_data()
 
@@ -59,8 +62,10 @@ class Simulator:
         self.future = future
     
     def predict_prov_future(self):
-        model = Model(["a","b","c","d","e","f"],self.history)
-        model.calc_freq_dist()
+        model = Model3(["a","b","c","d","e","f"],self.history)
+        model.calc_freq_dist_history() #Used for Model2/3
+        model.calc_bin_freq_dist_history() #Used for Model2
+        #model.calc_freq_dist() #Used for Model
         predicted_future = []
         for i in self.possible_provenance:
             predicted_future.append(model.predict_prov_path(i))
