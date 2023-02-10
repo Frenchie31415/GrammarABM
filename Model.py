@@ -1,3 +1,4 @@
+#Based off frequency distribution of characters
 class Model:
     def __init__(self,language,history):
         self.language = language

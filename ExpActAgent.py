@@ -1,11 +1,12 @@
 import networkx as nx
 import random
 import numpy as np
+import math
 
 #Equation used to calc P('user selects action' | 'possible actions')
 #P(E=e|P) = product(P(X=x)) for x in E (Assumes transformations are independent of each other)
 
-class PowerActAgent:
+class ExpActAgent:
     def __init__(self,language):
         self.language = language
     
@@ -58,7 +59,7 @@ class PowerActAgent:
         coef = 1 + (len(path) - 1) * weight
         for trans in path:
             trans_index = self.language.index(trans)
-            path_prob = path_prob * (self.dist[trans_index] ** coef)
+            path_prob = path_prob * math.exp(self.dist[trans_index] * coef)
             coef = coef - 0.1
         return path_prob
 

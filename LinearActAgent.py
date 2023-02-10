@@ -5,7 +5,7 @@ import numpy as np
 #Equation used to calc P('user selects action' | 'possible actions')
 #P(E=e|P) = product(P(X=x)) for x in E (Assumes transformations are independent of each other)
 
-class LinearActionAgent:
+class LinearActAgent:
     def __init__(self,language):
         self.language = language
     
@@ -46,7 +46,6 @@ class LinearActionAgent:
 
         actual_path = np.random.choice(paths,p=paths_prob)
 
-        print(actual_path)
         return actual_path
      
     def get_possible_prov_paths(self):
@@ -71,7 +70,7 @@ class LinearActionAgent:
         A.draw("test/test.png")
 
 if __name__ == "__main__":
-    agent = LinearActionAgent(["a","b","c","d","e","f"])
+    agent = LinearActAgent(["a","b","c","d","e","f"])
     agent.gen_dist()
     agent.load_graph("test2/0.txt")
     #agent.save_graph_pic()

@@ -3,6 +3,8 @@ from Agent import Agent
 from StocasticAgent import StocasticAgent
 from UnaryProbAgent import UnaryProbAgent
 from IndActAgent import IndActAgent
+from LinearActAgent import LinearActAgent
+from PowerActAgent import PowerActAgent
 from Model import Model
 import itertools
 import enchant
@@ -12,7 +14,7 @@ class Simulator:
         self.dir = dir
 
         #Initialise agent
-        self.agent = IndActAgent(["a","b","c","d","e","f"])
+        self.agent = PowerActAgent(["a","b","c","d","e","f"])
         self.agent.gen_dist()
         self.init_data()
 
